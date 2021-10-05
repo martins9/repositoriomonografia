@@ -104,12 +104,6 @@ limit 1000
 
 
 
-
-select mu.cod_municipio, mu.nome_municipio, uf.sigla_uf
-from municipio mu, uf uf
-where mu.sequencial_uf=uf.sequencial_uf limit 1000
-
-
 select es.cod_escola, 
 es.nome_escola, mu.nome_municipio, uf.sigla_uf
 from escola es, municipio mu, uf uf
@@ -269,7 +263,7 @@ group by nep.in_deficiencia_auditiva,nep.in_deficiencia_mental,nep.in_deficit_at
 nep.in_baixa_visao,nep.in_sabatista,nep.in_dislexia,nep.in_gestante,nep.in_cegueira,
 nep.in_lactante,nep.in_surdez,nep.in_autismo,nep.in_idoso, uf.sigla_uf
 
-========================================================================================================
+===================================================================================================================================================================================
 
 select spcname
       ,pg_tablespace_location(oid) 
@@ -290,7 +284,7 @@ update f_inscricao_teste as fit
 set pk_localidade_nascimento=filn.pk_localidade
 from f_inscricao_localidade_nascimento filn
 where fit.nu_inscricao=filn.nu_inscricao
-========================================================================================================
+====================================================================================================================================================================================
 
 
 select ca.nu_inscricao, cod_municipio_residencia, cod_municipio_nascimento, cod_municipio_prova
@@ -298,3 +292,22 @@ from candidato ca, municipio mu where (ca.cod_municipio_residencia=mu.cod_munici
 	ca.cod_municipio_nascimento=mu.cod_municipio or ca.cod_municipio_prova=mu.cod_municipio)
 order by ca.nu_inscricao
 
+====================================================================================================================================================================================
+
+select t.sigla_uf,
+	   t.acesso_internet,
+	   t.nu_ano,
+	   sum(t.qtd)
+from 
+(select dl.sigla_uf, dt.nu_ano,
+		CASE
+		when (((dps.acesso_internet='A' or dps.acesso_internet='B' or dps.acesso_internet='C') and dt.nu_ano = 2014) OR (dps.acesso_internet='B' and dt.nu_ano = 2015)) then 'SIM'
+		when ((dps.acesso_internet='A' and dt.nu_ano = 2015) OR (dps.acesso_internet='D' and dt.nu_ano = 2014))  then 'NAO'
+		END AS ACESSO_INTERNET,
+count(*) AS QTD from f_inscricao fi
+join d_tempo dt on fi.pk_tempo=dt.pk_tempo
+join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
+join d_perfil_socio dps on fi.pk_perfil_socio=dps.pk_perfil_socio
+where dps.acesso_internet notnull
+group by dl.sigla_uf, ACESSO_INTERNET, dt.nu_ano) t
+group by t.sigla_uf, t.acesso_internet, t.nu_ano

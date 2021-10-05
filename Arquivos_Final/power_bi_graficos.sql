@@ -1,3 +1,13 @@
+-- 4) Qual o total de inscritos no Enem por ano, sexo e estado? 
+
+select dl.sigla_uf, dt.nu_ano, dpc.tp_sexo, count(*) AS QTD 
+from f_inscricao fi
+join d_tempo dt on fi.pk_tempo=dt.pk_tempo
+join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
+join d_perfil_candidato dpc on fi.pk_candidato = dpc.pk_candidato
+group by dl.sigla_uf, dpc.tp_sexo, dt.nu_ano
+
+
 -- 8) Quantas pessoas deficientes se inscreveram no ENEM por estado e por ano?
 
 select dl.sigla_uf, dt.nu_ano,
