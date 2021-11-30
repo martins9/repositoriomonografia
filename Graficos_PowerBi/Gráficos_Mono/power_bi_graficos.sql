@@ -7,6 +7,28 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by dl.sigla_uf, dp.nome_area, dt.nu_ano
 
 
+-- 3) Qual a média das notas dos alunos com necessidade especiais por estado? 
+select dl.sigla_uf, dp.nome_area, dt.nu_ano, ROUND(AVG(fdp.notaprova)::NUMERIC,2) AS NOTA_PROVA
+from f_desempenho_prova fdp
+join d_localidade dl on fdp.pk_localidade_residencia=dl.pk_localidade
+join d_prova dp on fdp.pk_prova = dp.pk_prova
+join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
+join d_necessidades_especiais dd on fi.pk_necessidades_especiais=dd.pk_necessidades_especiais
+where (dd.in_deficiencia_auditiva = 'Sim' or 
+dd.in_deficiencia_mental='Sim' or 
+dd.in_deficit_atencao='Sim' or 
+dd.in_baixa_visao='Sim' or 
+dd.in_sabatista='Sim' or
+dd.in_dislexia='Sim' or
+dd.in_gestante='Sim' or
+dd.in_cegueira='Sim' or 
+dd.in_lactante='Sim' or 
+dd.in_surdez='Sim' or
+dd.in_autismo='Sim' or
+dd.in_idoso='Sim')
+group by dl.sigla_uf, dp.nome_area, dt.nu_ano
+
+
 -- 4) Qual o total de inscritos no Enem por ano, sexo e estado? 
 select dl.sigla_uf, dt.nu_ano, dpc.tp_sexo, count(*) AS QTD 
 from f_inscricao fi
