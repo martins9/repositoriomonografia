@@ -1,4 +1,4 @@
--- 1) Qual a média das notas dos alunos por estado e por tipo de prova?
+-- 1) 	Qual a média das notas dos alunos por estado, por tipo de prova e por ano?
 select dl.sigla_uf, dp.nome_area, dt.nu_ano, ROUND(AVG(fdp.notaprova)::NUMERIC,2) AS NOTA_PROVA
 from f_desempenho_prova fdp
 join d_localidade dl on fdp.pk_localidade_residencia=dl.pk_localidade
@@ -7,7 +7,7 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by dl.sigla_uf, dp.nome_area, dt.nu_ano
 
 
--- 2)	Qual perfil socioeconômico dos alunos agrupando por estado?
+-- 2)	Qual perfil socioeconômico dos alunos agrupando por estado e por ano?
 select (CASE 
 		WHEN dps.nivel_financeiro_familiar = 'A' and (dt.nu_ano in ('2014','2015')) THEN 'Nenhuma renda'
 		WHEN dps.nivel_financeiro_familiar = 'B' and dt.nu_ano = '2014' THEN 'Até R$ 724,00'
@@ -53,7 +53,7 @@ group by dps.nivel_financeiro_familiar, dl.sigla_uf, dpc.tp_sexo, dt.nu_ano
 order by dl.sigla_uf
 
 
--- 3) Qual a média das notas dos alunos com necessidade especiais por estado? 
+-- 3) Qual a média das notas dos alunos com necessidade especiais por estado e por ano? 
 select dl.sigla_uf, dp.nome_area, dt.nu_ano, ROUND(AVG(fdp.notaprova)::NUMERIC,2) AS NOTA_PROVA
 from f_desempenho_prova fdp
 join d_localidade dl on fdp.pk_localidade_residencia=dl.pk_localidade
@@ -83,28 +83,28 @@ join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
 join d_perfil_candidato dpc on fi.pk_candidato = dpc.pk_candidato
 group by dl.sigla_uf, dpc.tp_sexo, dt.nu_ano
 
+-- 6) Qual a porcentagem de acertos e erros por prova, estado e sexo
+select fdp.qtdacertos, fdp.qtderros
+from f_desempenho_prova fdp
+join d_tempo dt on fdp.pk_tempo = dt.pk_tempo
+join d_prova dp on fdp.pk_prova = dp.pk_prova
+join d_escola de on fdp.pk_escola=de.pk_escola
+join d_localidade dl on de.pk_localidade=dl.pk_localidade
 
--- 8) Quantas pessoas deficientes se inscreveram no ENEM por estado e por ano?
-select dl.sigla_uf, dt.nu_ano,
-count(*) AS QTD from f_inscricao fi
-join d_tempo dt on fi.pk_tempo=dt.pk_tempo
-join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
-join d_necessidades_especiais dd on fi.pk_necessidades_especiais=dd.pk_necessidades_especiais
-where (dd.in_deficiencia_auditiva = 'Sim' or 
-dd.in_deficiencia_mental='Sim' or 
-dd.in_deficit_atencao='Sim' or 
-dd.in_baixa_visao='Sim' or 
-dd.in_sabatista='Sim' or
-dd.in_dislexia='Sim' or
-dd.in_gestante='Sim' or
-dd.in_cegueira='Sim' or 
-dd.in_lactante='Sim' or 
-dd.in_surdez='Sim' or
-dd.in_autismo='Sim' or
-dd.in_idoso='Sim')
-group by dl.sigla_uf, dt.nu_ano
 
--- 7) Qual a posição da escola referente a média das notas nas provas referente ao nível nacional?
+select  de.nome_escola, dp.nome_area, dt.nu_ano, 
+	sum(fdp.qtdacertos) as acertos, 
+	sum(fdp.qtderros) as erros, 
+	fdp.qtdacertos+fdp.qtderros as total
+	from f_desempenho_prova fdp
+	join d_tempo dt on fdp.pk_tempo = dt.pk_tempo
+	join d_prova dp on fdp.pk_prova = dp.pk_prova
+	join d_escola de on fdp.pk_escola=de.pk_escola
+	join d_localidade dl on de.pk_localidade=dl.pk_localidade
+	group by de.nome_escola, dp.nome_area, dt.nu_ano, fdp.qtdacertos, fdp.qtderros
+
+
+-- 7) Qual a média da escola referente a média das notas nas provas referente ao nível nacional?
 select dp.nome_area, dt.nu_ano, de.nome_escola, round(cast(avg(fdp.notaprova) as numeric),2) as Media_Prova
 from f_desempenho_prova fdp 
 join d_escola de on fdp.pk_escola=de.pk_escola
@@ -113,7 +113,7 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by de.nome_escola, dp.nome_area, dt.nu_ano
 
 
--- 8) Qual a posição da escola referente a média das notas nas provas referente ao nível estadual?
+-- 8) Qual a média da escola referente a média das notas nas provas referente ao nível estadual?
 select dp.nome_area, dl.sigla_uf, dt.nu_ano, de.nome_escola, round(cast(avg(fdp.notaprova) as numeric),2) as Media_Prova
 from f_desempenho_prova fdp 
 join d_escola de on fdp.pk_escola=de.pk_escola
@@ -123,7 +123,7 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by de.nome_escola, dp.nome_area, dl.sigla_uf, dt.nu_ano
 
 
--- 9) Quantas pessoas deficientes se inscreveram agrupados por tipo de deficiência e estado?
+-- 9) Quantas pessoas deficientes se inscreveram no ENEM por estado e por ano?
 select
 SUM(case when dd.in_deficiencia_auditiva='Sim' THEN 1 ELSE 0 END) AS Deficiencia_Auditiva,
 SUM(case when dd.in_deficiencia_mental='Sim' THEN 1 ELSE 0 END) AS Deficiencia_Mental,
@@ -145,20 +145,19 @@ join d_necessidades_especiais dd on fi.pk_necessidades_especiais=dd.pk_necessida
 group by dl.sigla_uf, dt.nu_ano
 
 
--- 10) Para cada tipo de deficiência, foi solicitado qual auxílio?
-select da.in_mesa_cadeira_separada, da.in_leitura_labial, da.in_mesa_cadeira_rodas,
-da.in_guia_interprete, da.in_apoio_perna, da.in_transcricao, da.in_libras,
-da.in_ledor, da.in_acesso, dt.nu_ano, dl.sigla_uf
+-- 10) Quantas pessoas deficientes se inscreveram agrupados por tipo de deficiência, estado e por ano?)
+select 
+SUM(case when da.in_mesa_cadeira_separada='Sim' THEN 1 ELSE 0 END) AS Mesa_Cadeira_Separada,
+SUM(case when da.in_leitura_labial='Sim' THEN 1 ELSE 0 END) AS Leitura_Labial,
+SUM(case when da.in_mesa_cadeira_rodas='Sim' THEN 1 ELSE 0 END) AS Mesa_Cadeira_Rodas,
+SUM(case when da.in_guia_interprete='Sim' THEN 1 ELSE 0 END) AS Guia_Interprete,
+SUM(case when da.in_apoio_perna='Sim' THEN 1 ELSE 0 END) AS Apoio_Perna,
+SUM(case when da.in_transcricao='Sim' THEN 1 ELSE 0 END) AS Transcricao,
+SUM(case when da.in_libras='Sim' THEN 1 ELSE 0 END) AS Libras,
+SUM(case when da.in_ledor='Sim' THEN 1 ELSE 0 END) AS Ledor,
+SUM(case when da.in_acesso='Sim' THEN 1 ELSE 0 END) AS In_Acesso,
+dt.nu_ano, dl.sigla_uf
 from f_inscricao fi, d_auxilio da, d_tempo dt, d_localidade dl
 where fi.pk_auxilio=da.pk_auxilio and
 fi.pk_tempo=dt.pk_tempo and
-fi.pk_localidade_residencia=dl.pk_localidade and
-(da.in_mesa_cadeira_separada='Sim' or
-da.in_leitura_labial='Sim' or
-da.in_mesa_cadeira_rodas='Sim' or
-da.in_guia_interprete='Sim' or
-da.in_apoio_perna='Sim' or
-da.in_transcricao='Sim' or
-da.in_libras='Sim' or
-da.in_ledor='Sim' or
-da.in_acesso='Sim')
+fi.pk_localidade_residencia=dl.pk_localidade
