@@ -43,13 +43,12 @@ select (CASE
 		WHEN dps.nivel_financeiro_familiar = 'Q' and dt.nu_ano = '2014' THEN 'Mais de R$ 14.480,01'
 		WHEN dps.nivel_financeiro_familiar = 'Q' and dt.nu_ano = '2015' THEN 'Mais de 15.760,00'
 		END ) AS AVALIACAO_FAMILIAR,
-		dl.sigla_uf, dt.nu_ano, dpc.tp_sexo, count(*) AS QTD 
+		dl.sigla_uf, dt.nu_ano, count(*) AS QTD 
 from f_inscricao fi
 join d_tempo dt on fi.pk_tempo=dt.pk_tempo
 join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
-join d_perfil_candidato dpc on fi.pk_candidato = dpc.pk_candidato
 join d_perfil_socioeconomico dps on fi.pk_perfil_socio=dps.pk_perfil_socio
-group by dps.nivel_financeiro_familiar, dl.sigla_uf, dpc.tp_sexo, dt.nu_ano
+group by dps.nivel_financeiro_familiar, dl.sigla_uf, dt.nu_ano
 order by dl.sigla_uf
 
 
