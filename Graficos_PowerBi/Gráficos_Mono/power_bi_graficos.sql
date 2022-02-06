@@ -82,7 +82,7 @@ join d_localidade dl on fi.pk_localidade_residencia=dl.pk_localidade
 join d_perfil_candidato dpc on fi.pk_candidato = dpc.pk_candidato
 group by dl.sigla_uf, dpc.tp_sexo, dt.nu_ano
 
--- 6) Qual a porcentagem de acertos e erros por prova, estado e sexo
+-- 5) Qual a porcentagem de acertos e erros por prova, estado e sexo
 select fdp.qtdacertos, fdp.qtderros
 from f_desempenho_prova fdp
 join d_tempo dt on fdp.pk_tempo = dt.pk_tempo
@@ -103,7 +103,7 @@ select  de.nome_escola, dp.nome_area, dt.nu_ano,
 	group by de.nome_escola, dp.nome_area, dt.nu_ano, fdp.qtdacertos, fdp.qtderros
 
 
--- 7) Qual a média da escola referente a média das notas nas provas referente ao nível nacional?
+-- 6) Qual a média da escola referente a média das notas nas provas referente ao nível nacional?
 select dp.nome_area, dt.nu_ano, de.nome_escola, round(cast(avg(fdp.notaprova) as numeric),2) as Media_Prova
 from f_desempenho_prova fdp 
 join d_escola de on fdp.pk_escola=de.pk_escola
@@ -112,7 +112,24 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by de.nome_escola, dp.nome_area, dt.nu_ano
 
 
--- 8) Qual a média da escola referente a média das notas nas provas referente ao nível estadual?
+select dp.nome_area as nomeArea, dt.nu_ano as Ano, de.nome_escola nomeEscola, round(cast(avg(notaProva) as numeric),2) as Media_Prova,
+	( select round(cast(avg(notaProva) as numeric),2) as Media_Geral
+		from f_desempenho_prova fdp 
+		join d_prova dp1 on fdp.pk_prova=dp1.pk_prova
+		join d_tempo dt1 on fdp.pk_tempo=dt1.pk_tempo
+	 	where dp1.nome_area=dp.nome_area and
+	 	dt1.nu_ano=dt.nu_ano
+		group by dp.nome_area, dt.nu_ano) as MediaTotal
+	from f_desempenho_prova fdp 
+	join d_escola de on fdp.pk_escola=de.pk_escola
+	join d_prova dp on fdp.pk_prova=dp.pk_prova
+	join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
+	where de.nome_escola='CE VILA BELA'
+group by nomeEscola, nomeArea, Ano
+
+
+
+-- 7) Qual a média da escola referente a média das notas nas provas referente ao nível estadual?
 select dp.nome_area, dl.sigla_uf, dt.nu_ano, de.nome_escola, round(cast(avg(fdp.notaprova) as numeric),2) as Media_Prova
 from f_desempenho_prova fdp 
 join d_escola de on fdp.pk_escola=de.pk_escola
@@ -122,7 +139,7 @@ join d_tempo dt on fdp.pk_tempo=dt.pk_tempo
 group by de.nome_escola, dp.nome_area, dl.sigla_uf, dt.nu_ano
 
 
--- 9) Quantas pessoas deficientes se inscreveram no ENEM por estado e por ano?
+-- 8) Quantas pessoas deficientes se inscreveram no ENEM por estado e por ano?
 select
 SUM(case when dd.in_deficiencia_auditiva='Sim' THEN 1 ELSE 0 END) AS Deficiencia_Auditiva,
 SUM(case when dd.in_deficiencia_mental='Sim' THEN 1 ELSE 0 END) AS Deficiencia_Mental,
@@ -144,7 +161,7 @@ join d_necessidades_especiais dd on fi.pk_necessidades_especiais=dd.pk_necessida
 group by dl.sigla_uf, dt.nu_ano
 
 
--- 10) Quantas pessoas deficientes se inscreveram agrupados por tipo de deficiência, estado e por ano?)
+-- 9) Quantas pessoas deficientes se inscreveram agrupados por tipo de deficiência, estado e por ano?)
 select 
 SUM(case when da.in_mesa_cadeira_separada='Sim' THEN 1 ELSE 0 END) AS Mesa_Cadeira_Separada,
 SUM(case when da.in_leitura_labial='Sim' THEN 1 ELSE 0 END) AS Leitura_Labial,
