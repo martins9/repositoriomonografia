@@ -184,7 +184,8 @@ group by dt.nu_ano, dl.sigla_uf
 select distinct deficiencia, auxilio, ano
 from (select dt.nu_ano as ano,
 case when in_deficiencia_auditiva='Sim' THEN 'deficiencia_auditiva'
-	 when in_deficiencia_mental='Sim' THEN 'deficiencia_mental' 
+	 when in_deficiencia_mental='Sim' THEN 'deficiencia_mental'
+	 when in_deficiencia_fisica='Sim' THEN 'deficiencia_fisica'
 	 when in_deficit_atencao='Sim' THEN 'deficit_atencao' 
 	 when in_baixa_visao='Sim' THEN 'baixa_visao'
 	 when in_sabatista='Sim' THEN 'sabatista'
@@ -196,21 +197,21 @@ case when in_deficiencia_auditiva='Sim' THEN 'deficiencia_auditiva'
      when in_autismo='Sim' THEN 'autismo'
      when in_idoso='Sim' THEN 'idoso' END AS Deficiencia,
 case
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_guia_interprete='Sim') THEN 'guia_interprete'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_mesa_cadeira_separada='Sim') THEN 'mesa_cadeira_separada'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_leitura_labial='Sim') THEN 'leitura_labial'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_mesa_cadeira_rodas='Sim') THEN 'mesa_cadeira_rodas'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_apoio_perna='Sim') THEN 'apoio_perna'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_transcricao='Sim') THEN 'transcricao'
-    when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_libras='Sim') THEN 'libras'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_ledor='Sim') THEN 'ledor'
-	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_acesso='Sim') THEN 'acesso'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_guia_interprete='Sim') THEN 'guia_interprete'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_mesa_cadeira_separada='Sim') THEN 'mesa_cadeira_separada'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_leitura_labial='Sim') THEN 'leitura_labial'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_mesa_cadeira_rodas='Sim') THEN 'mesa_cadeira_rodas'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_apoio_perna='Sim') THEN 'apoio_perna'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_transcricao='Sim') THEN 'transcricao'
+    when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_libras='Sim') THEN 'libras'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_ledor='Sim') THEN 'ledor'
+	when ((in_deficiencia_auditiva='Sim' OR in_deficiencia_mental='Sim' OR in_deficiencia_fisica='Sim' OR in_deficit_atencao='Sim' OR in_baixa_visao='Sim' OR in_sabatista='Sim' OR in_dislexia='Sim' OR in_gestante='Sim' OR in_cegueira='Sim' OR in_lactante='Sim' OR in_surdez='Sim' OR in_autismo='Sim' OR in_idoso='Sim') AND in_acesso='Sim') THEN 'acesso'
 END AS auxilio	  
 from f_inscricao fi
 join d_necessidades_especiais dne on fi.pk_necessidades_especiais=dne.pk_necessidades_especiais
 join d_auxilio da on fi.pk_auxilio = da.pk_auxilio
 join d_tempo dt on fi.pk_tempo = dt.pk_tempo
-group by dt.nu_ano, fi.nu_inscricao, in_deficiencia_auditiva, in_deficiencia_mental, in_deficit_atencao, in_baixa_visao,
+group by dt.nu_ano, fi.nu_inscricao, in_deficiencia_auditiva, in_deficiencia_mental, in_deficiencia_fisica, in_deficit_atencao, in_baixa_visao,
 	  in_sabatista, in_dislexia, in_gestante, in_cegueira, in_lactante, in_surdez, in_autismo, in_idoso, in_mesa_cadeira_separada,
 	  in_leitura_labial,in_mesa_cadeira_rodas,in_guia_interprete, in_apoio_perna, in_transcricao, in_libras, in_ledor, in_acesso) t
 where deficiencia notnull and auxilio notnull
